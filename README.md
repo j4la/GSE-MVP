@@ -7,17 +7,17 @@ The ESP32-PoE-ISO is used, with an onboard Ethernet port. The Ethernet port allo
 Based on the packets received the program will activate/deactivate various pins/ports.
 
 # Connected pins:
-* N2O Fill
+* N2O Fill:
     This activates the solenoid that releases N2O into the combustion chamber.
 
-* Purge
+* Purge:
     This activates the solenoids that empty the entire combustion system.
 
-* O2 Fill
+* O2 Fill:
     This activates the solenoid that releases O2 into the combustion chamber.
 
-* Fire
+* Fire:
     This activates the igniter, where activating this pin allows 12V to flow through toward the igniter.
 
-* Fire PWM
+* Fire PWM:
     The PWM signal is to activate the sparker.

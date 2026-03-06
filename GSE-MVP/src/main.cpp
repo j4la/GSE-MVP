@@ -8,27 +8,14 @@ const int GPIO_PIN_o2Valve;
 const int GPIO_PIN_fire;
 const int GPIO_PIN_firePWM;
 
+// Probs dont need
 bool ACTIVATE_n2oValve;
 bool ACTIVATE_purge;
 bool ACTIVATE_o2Valve;
 bool ACTIVATE_fire;
 
-/* 
-States:
-Fuel Active
-  Neutral
-  Fill
-  Purge
-Standby
-Ignition Active
-{ Fuel Active Fill
-  Fuel Active Purge
-  Ignition Active Fire
-  Igntion Active O2 }
-    O2
-    Fire
-    Neither
-*/
+bool ACTIVATE_PIN = true;
+bool DEACTIVATE_PIN = false;
 
 const int STATE_fuelActive = 1;
 const int STATE_ignActive = 2;
@@ -43,8 +30,8 @@ const int ACT_O2;
 int STATE_current;
 int ACT_current;
 
-void set_n2oValve(bool* activate){
-  if (*activate == true)  { // open valve
+void set_n2oValve(bool activate){
+  if (activate)  { // open valve
     digitalWrite(GPIO_PIN_n2oValve, HIGH);
   }
   else  { // close valve
@@ -52,8 +39,8 @@ void set_n2oValve(bool* activate){
   }
 }
 
-void set_purge(bool* activate){
-  if (*activate == true)  {
+void set_purge(bool activate){
+  if (activate)  {
     digitalWrite(GPIO_PIN_purge, HIGH);
   }
   else  {
@@ -61,8 +48,8 @@ void set_purge(bool* activate){
   }
 }
 
-void set_o2Valve(bool* activate){
-  if (*activate == true)  {
+void set_o2Valve(bool activate){
+  if (activate)  {
     digitalWrite(GPIO_PIN_o2Valve, HIGH);
   }
   else  {
@@ -70,8 +57,8 @@ void set_o2Valve(bool* activate){
   }
 }
 
-void set_fire(bool* activate){
-  if (*activate == true)  {
+void set_fire(bool activate){
+  if (activate)  {
     digitalWrite(GPIO_PIN_fire, HIGH);
   }
   else  {
@@ -90,22 +77,29 @@ void switchState(int STATE, int ACTION, int* previousState, int* previousAction)
       if (ACTION == ACT_purge)  {
         if (*previousState == ACT_fill) {
           // Set Fuel Valve Port to RESET
+          set_n2oValve(DEACTIVATE_PIN);
           // Set Fuel Purge Port to SET
+          set_purge(ACTIVATE_PIN);
         }
         else if (*previousState == ACT_purge | ACT_neutral) {
           // Set Fuel Purge Port to SET
+          set_purge(ACTIVATE_PIN);
         }
         *previousAction = ACT_purge;
       }
       else if (ACTION == ACT_fill)  {
         // Set Fuel Purge Port to RESET
+        set_purge(DEACTIVATE_PIN);
         // Set Fuel Valve Port to SET
+        set_n2oValve(ACTIVATE_PIN);
 
         *previousAction = ACT_fill;
       }
       else if (ACTION == ACT_neutral) {
         // Set Fuel Valve Port to RESET
+        set_n2oValve(DEACTIVATE_PIN);
         // Set Fuel Purge Port to RESET
+        set_purge(DEACTIVATE_PIN);
 
         *previousAction = ACT_neutral;
       }
@@ -116,22 +110,27 @@ void switchState(int STATE, int ACTION, int* previousState, int* previousAction)
     case STATE_ignActive:
       if (*previousState == STATE_fuelActive && *previousAction == ACT_fill)  {
         // Set Fuel Valve Port to RESET
+        set_n2oValve(DEACTIVATE_PIN);
       }
       else if (*previousState == STATE_fuelActive && *previousAction == ACT_purge)  {
         // Set Fuel Purge Port to RESET
+        set_purge(DEACTIVATE_PIN);
       }
       
       if (ACTION == ACT_fire) {
         if (*previousState == STATE_ignActive && *previousAction == ACT_O2)
         {
           // Set O2 Port to RESET
+          set_o2Valve(DEACTIVATE_PIN);
         }
         // Set Ignition Relay Port to Set
+        set_fire(ACTIVATE_PIN);
 
         *previousAction = ACT_fire;
       }
       else if (ACTION == ACT_O2)  {
         // Set O2 Port to SET
+        set_o2Valve(ACTIVATE_PIN);
 
         *previousAction = ACT_O2;
       }
