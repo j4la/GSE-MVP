@@ -1,22 +1,17 @@
 #include <Arduino.h>
 
-// Define PIN numbers for screw terminal outputs
+// Allocated PIN numbers
 const int GPIO_PIN_n2oValve;
 const int GPIO_PIN_purge;
 const int GPIO_PIN_o2Valve;
-
 const int GPIO_PIN_fire;
 const int GPIO_PIN_firePWM;
 
-// Probs dont need
-bool ACTIVATE_n2oValve;
-bool ACTIVATE_purge;
-bool ACTIVATE_o2Valve;
-bool ACTIVATE_fire;
 
 bool ACTIVATE_PIN = true;
 bool DEACTIVATE_PIN = false;
 
+// 
 const int STATE_fuelActive = 1;
 const int STATE_ignActive = 2;
 const int STATE_standby = 3;
@@ -155,7 +150,9 @@ void setup() {
 }
 
 void loop() {
-  //
+  // read TCP packets
+  // and send TCP packets?
+  // change state based on TCP packet info
 }
 
 /*  Questions
